@@ -13,6 +13,7 @@ router.get('/', (req, res) => {
   Users.get()
   .then(res => {
     console.log(res)
+    res.status(200).json(res)
   })
 });
 
