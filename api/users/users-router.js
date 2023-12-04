@@ -8,7 +8,7 @@ const Posts = require("../posts/posts-model")
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   // RETURN AN ARRAY WITH ALL THE USERS
   Users.get()
   .then(user => {
@@ -26,7 +26,7 @@ router.get('/:id',validateUserId, (req, res) => {
   res.status(200).json(user)
 });
 
-router.post('/', validateUser, (req, res) => {
+router.post('/', validateUser, (req, res, next) => {
   // RETURN THE NEWLY CREATED USER OBJECT
   // this needs a middleware to check that the request body is valid
   const name = req.name
@@ -40,12 +40,21 @@ router.post('/', validateUser, (req, res) => {
 
 });
 
-router.put('/:id', validateUser, validateUserId, (req, res) => {
+router.put('/:id', validateUser, validateUserId, (req, res, next) => {
   // RETURN THE FRESHLY UPDATED USER OBJECT
   // this needs a middleware to verify user id
   // and another middleware to check that the request body is valid
   console.log("this is the req.user", req.user, "this is the req.name", req.name)
-
+  const id = req.params.id
+  const changes = req.name
+  Users.update(id, {name: changes})
+  .then(updatedUser => {
+    console.log("this is the updated User", updatedUser)
+    res.status(202).json(updatedUser)
+  })
+  .catch(error => {
+    next(error)
+  })
 });
 
 router.delete('/:id', (req, res) => {
@@ -64,12 +73,12 @@ router.post('/:id/posts', (req, res) => {
   // and another middleware to check that the request body is valid
 });
 
-router.use((error, req, res, next) => { //eslint-disable-line
+router.use((error, req, res, next) => { // eslint-disable-line
   res.status(error.status || 500).json({
     message: error.message,
-    customMessage: "Something has gone wrong inside of the users-router"
-  })
-})
+    customMessage: "Something bad inside the users router",
+  });
+});
 
 // do not forget to export the router
 module.exports = router 
