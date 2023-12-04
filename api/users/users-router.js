@@ -12,7 +12,6 @@ router.get('/', (req, res) => {
   // RETURN AN ARRAY WITH ALL THE USERS
   Users.get()
   .then(user => {
-    console.log(user)
     res.status(200).json(user)
   })
   .catch(error => {
@@ -23,7 +22,6 @@ router.get('/', (req, res) => {
 router.get('/:id',validateUserId, (req, res) => {
   // RETURN THE USER OBJECT
   // this needs a middleware to verify user id
-  console.log("this is the req.user", req.user) //works
   const user = req.user
   res.status(200).json(user)
 });
@@ -31,11 +29,9 @@ router.get('/:id',validateUserId, (req, res) => {
 router.post('/', validateUser, (req, res) => {
   // RETURN THE NEWLY CREATED USER OBJECT
   // this needs a middleware to check that the request body is valid
-  console.log("this is the req.name", req.name)
   const name = req.name
   Users.insert({ name: name })
   .then(newUser => {
-    console.log("this is the new user", newUser)
     res.status(201).json(newUser)
   })
   .catch(error => {
@@ -44,10 +40,12 @@ router.post('/', validateUser, (req, res) => {
 
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUser, validateUserId, (req, res) => {
   // RETURN THE FRESHLY UPDATED USER OBJECT
   // this needs a middleware to verify user id
   // and another middleware to check that the request body is valid
+  console.log("this is the req.user", req.user, "this is the req.name", req.name)
+
 });
 
 router.delete('/:id', (req, res) => {
