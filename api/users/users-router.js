@@ -15,6 +15,9 @@ router.get('/', (req, res) => {
     console.log(user)
     res.status(200).json(user)
   })
+  .catch(error => {
+    next(error)
+  })
 });
 
 router.get('/:id',validateUserId, (req, res) => {
@@ -35,8 +38,8 @@ router.post('/', validateUser, (req, res) => {
     console.log("this is the new user", newUser)
     res.status(201).json(newUser)
   })
-  .catch(() => {
-
+  .catch(error => {
+    next(error)
   })
 
 });
@@ -62,6 +65,13 @@ router.post('/:id/posts', (req, res) => {
   // this needs a middleware to verify user id
   // and another middleware to check that the request body is valid
 });
+
+router.use((error, req, res, next) => { //eslint-disable-line
+  res.status(error.status || 500).json({
+    message: error.message,
+    customMessage: "Something has gone wrong inside of the users-router"
+  })
+})
 
 // do not forget to export the router
 module.exports = router 
