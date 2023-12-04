@@ -11,9 +11,9 @@ const router = express.Router();
 router.get('/', (req, res) => {
   // RETURN AN ARRAY WITH ALL THE USERS
   Users.get()
-  .then(res => {
-    console.log(res)
-    res.status(200).json(res)
+  .then(user => {
+    console.log(user)
+    res.status(200).json(user)
   })
 });
 
@@ -50,3 +50,4 @@ router.post('/:id/posts', (req, res) => {
 });
 
 // do not forget to export the router
+module.exports = router 
