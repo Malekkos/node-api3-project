@@ -69,13 +69,12 @@ router.delete('/:id', validateUserId, async (req, res, next) => {
   })
 });
 
-router.get('/:id/posts', validateUserId, (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res, next) => {
   // RETURN THE ARRAY OF USER POSTS
   // this needs a middleware to verify user id
   const id = req.params.id
   Users.getUserPosts(id)
   .then(posts => {
-    console.log(posts)
     res.status(200).json(posts)
   })
   .catch(error => {
@@ -83,10 +82,17 @@ router.get('/:id/posts', validateUserId, (req, res) => {
   })
 });
 
-router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
+router.post('/:id/posts', validateUserId, validatePost, async (req, res, next) => {
   // RETURN THE NEWLY CREATED USER POST
   // this needs a middleware to verify user id
   // and another middleware to check that the request body is valid
+  Posts.insert({user_id: req.params.id, text: req.text})
+    .then(post => {
+    res.status(202).json(post)
+  })
+  .catch(error => {
+    next(error)
+  })
 });
 
 router.use((error, req, res, next) => { // eslint-disable-line
