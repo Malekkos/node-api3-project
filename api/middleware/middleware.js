@@ -42,6 +42,17 @@ function validateUser(req, res, next) {
 
 function validatePost(req, res, next) {
   // DO YOUR MAGIC
+  console.log("Validating Post...")
+  console.log("this is the req body", req.body)
+  const { text } = req.body
+  if(!text) {
+    res.status({
+      message: "missing required text field"
+    })
+  } else {
+    req.text = text
+  }
+  next()
 }
 
 // do not forget to expose these functions to other modules
