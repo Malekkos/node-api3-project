@@ -72,6 +72,15 @@ router.delete('/:id', validateUserId, async (req, res, next) => {
 router.get('/:id/posts', validateUserId, (req, res) => {
   // RETURN THE ARRAY OF USER POSTS
   // this needs a middleware to verify user id
+  const id = req.params.id
+  Users.getUserPosts(id)
+  .then(posts => {
+    console.log(posts)
+    res.status(200).json(posts)
+  })
+  .catch(error => {
+    next(error)
+  })
 });
 
 router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
